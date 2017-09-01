@@ -1,3 +1,4 @@
+ 
     var numLinhas = 3,
         numColunas = 4;
 
@@ -59,7 +60,15 @@
         };
 
         delColuna = function(handler) {
+            
+            console.log($(handler).closest('tr').parent().index());
 
+            //$(handler).closest('tr');
+            //var tr = $('#tabela-gauss tfoot tr').eq(0);
+            //$(cols).insertAfter(tr.find('td').eq(numColunas - 2));
+
+            //cols = $('<td id="val-td"><input type="text" value="0" class="val-input"></td>');
+            //var tr = $('#tabela-gauss tbody tr').eq(i); // pegando linha da tabela
             return false;
         };
 
