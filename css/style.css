@@ -1,33 +1,7 @@
-#tabela {
-    margin-top: 5%;
-}
-
-.material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 48px;
-    /* Preferred icon size */
-    display: inline-block;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    direction: ltr;
-    /* Support for all WebKit browsers. */
-    -webkit-font-smoothing: antialiased;
-    /* Support for Safari and Chrome. */
-    text-rendering: optimizeLegibility;
-    /* Support for Firefox. */
-    -moz-osx-font-smoothing: grayscale;
-    /* Support for IE. */
-    font-feature-settings: 'liga';
-}
-
 th,
 td {
     text-align: center;
+    background-color: #f8f9fa;
 }
 
 #nova-coluna {
@@ -45,4 +19,16 @@ td {
     outline: 0;
 }
 
-.val-td {}
+.table thead th {
+    color: #fff;
+    background-color: #61BECD;
+    border-color: #61BECD;
+}
+
+.table input {
+    background-color: transparent;
+}
+
+.bold {
+    font-weight: bold;
+}

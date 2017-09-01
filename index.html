@@ -13,13 +13,18 @@
 </head>
 
 <body>
+
     <div class="container">
+        <!-- Image and text -->
+        <nav class="navbar navbar-dark" style="background-color: #4DB1C1; ">
+            <a class="navbar-brand" href="#" style="display: inline;">Sistema Linear: Método de Gauss</a>
+        </nav>
         <table class="table table-bordered table-responsive" id="tabela-gauss">
             <thead class="thead-default">
                 <tr>
-                    <th>1</th>
-                    <th>2</th>
-                    <th>3</th>
+                    <th>X1</th>
+                    <th>X2</th>
+                    <th>X3</th>
                     <th>Resultado</th>
                     <th>excluir</th>
                 </tr>
@@ -30,39 +35,40 @@
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td><img src="imagens/delete-circle.png" alt="deletar-linha" onclick="delLinha(this);"></td>
+                    <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-linha" onclick="delLinha(this);"></td>
                 </tr>
                 <tr>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td><img src="imagens/delete-circle.png" alt="deletar-linha" onclick="delLinha(this);"></td>
+                    <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-linha" onclick="delLinha(this);"></td>
                 </tr>
                 <tr>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
                     <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td><img src="imagens/delete-circle.png" alt="deletar-linha" onclick="delLinha(this);"></td>
+                    <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-linha" onclick="delLinha(this);"></td>
                 </tr>
             </tbody>
 
             <tfoot>
                 <tr>
-                    <td><img src="imagens/delete-circle.png" alt="deletar-coluna" onclick="delColuna(this);"></td>
-                    <td><img src="imagens/delete-circle.png" alt="deletar-coluna" onclick="delColuna(this);"></td>
-                    <td><img src="imagens/delete-circle.png" alt="deletar-coluna" onclick="delColuna(this);"></td>
-                    <td><img src="imagens/delete-circle.png" alt="deletar-coluna" onclick="delColuna(this);"></td>
-                    <td rowspan="2" id="nova-coluna" onclick="addColuna(this);"><img src="imagens/arrow-right-drop-circle.png" alt="adicionar-coluna"></td>
+                    <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-coluna" onclick="delColuna(this);"></td>
+                    <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-coluna" onclick="delColuna(this);"></td>
+                    <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-coluna" onclick="delColuna(this);"></td>
+                    <td rowspan="2" colspan="2" id="nova-coluna" onclick="addColuna(this);"><img src="imagens/SVG/arrow_right.svg" class="img-responsive" class="img-responsive" alt="adicionar-coluna"></td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="text-align: center;" id="nova-linha" onclick="addLinha(this);"><img src="imagens/arrow-down-drop-circle.png" alt="adicionar-Linha"></td>
-
+                    <td colspan="3" style="text-align: center;" id="nova-linha" onclick="addLinha(this);"><img src="imagens/SVG/arrow_down.svg" class="img-responsive" alt="adicionar-Linha"></td>
                 </tr>
 
             </tfoot>
         </table>
+
+        <button type="button" class="btn btn-info btn-lg btn-block" onclick="gauss();">Calcular</button>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js " integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN " crossorigin="anonymous "></script>
