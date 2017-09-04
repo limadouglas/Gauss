@@ -106,20 +106,66 @@
 
 
      $("#tabela-gauss").on("click", "input", function() {
-         console.log($(this).val());
+         //console.log($(this).val());
      });
 
 
 
      gauss = function() {
-         for (var i = 0; i < numLinhas - 1; i++) {
+
+         for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
+
              var linha = [];
-             var linhaAux = []
-             for (var j = 0; j < numColunas - 1; j++) {
-                 linha[j] = celula(i, j);
-                 linhaAux[j] = celula(i + 1, j);
+             var linhaAux = [];
+
+             for (var i = posColuna; i < numColunas; i++) {
+                 linha[i] = parseInt(celula(posLinha, i));
              }
+
+
+             for (var posLinhaCalc = posLinha + 1; posLinhaCalc < numLinhas; posLinhaCalc++) {
+                 // zerando valores iniciais do vetor(valores já calculados)
+                 for (var i = 0; i < posColuna; i++) {
+                     linha[i] = 0;
+                     linhaAux[i] = 0;
+                 }
+                 // atualizando vetor
+                 for (var i = posColuna; i < numColunas; i++) {
+                     linhaAux[i] = parseInt(celula(posLinhaCalc, i));
+                 }
+
+                 linhaAux = calcVetor(linha, linhaAux, posColuna);
+                 console.log(linhaAux);
+                 //atualizar tabela
+                 atualizTabela(linhaAux, posLinhaCalc);
+             }
+
          }
+
+         for (var posLinha = numLinhas; posLinha < 0; posLinha--) {
+             var linha = [];
+             var linhaAux = [];
+             var result = [];
+
+             for (var i = 0; i < numColunas; i++) {
+                 linha[i] = parseInt(celula(posLinha, i));
+             }
+
+             result[numColunas - 1] = linha[numColunas - 1] / linha[numColunas - 2];
+
+
+
+             /*
+                          for (var i = 0; i < numLinhas; i++) {
+                              var tr = $('#tabela-gauss tbody tr').eq(i);
+                              tr.find('input').eq(b).val(String(tr.find('input').eq(b).val() * result[numColunas-1]));
+                          }
+             */
+
+         }
+
+
+
      };
 
 
@@ -130,11 +176,46 @@
      }
 
 
+
+     function calcVetor(vet1, vet2, pos) {
+
+         var valAux1 = vet1[pos],
+             valAux2 = vet2[pos];
+
+         for (var i = pos; i < vet2.length; i++) {
+             vet2[i] = vet2[i] * valAux1;
+         }
+
+
+         if ((valAux1 / valAux2) != Number.isInteger) {
+             for (var i = pos; i < vet1.length; i++) {
+                 vet1[i] = vet1[i] * -valAux2;
+             }
+         }
+
+         for (var i = pos; i < vet1.length; i++) {
+             vet2[i] = vet1[i] + vet2[i];
+         }
+
+         return vet2;
+     }
+
+
+
+     function atualizTabela(vetor, linha) {
+
+         var tr = $('#tabela-gauss tbody tr').eq(linha);
+
+         for (var i = 0; i < vetor.length; i++) {
+             tr.find('input').eq(i).val(String(vetor[i]));
+         }
+     }
+
+
  })(jQuery);
 
- 5 * -2
- 2 * 5
+ /*
+      5 * -2 2 * 5
 
-
- 2 * -2
- 2 * 2
+      2 * -2 2 * 2
+*/
