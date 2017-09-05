@@ -187,12 +187,8 @@
          // se o primeiro valor da linha de baixo for igual a 0 então não preciso calcular.
          if (valAux2 != 0) {
              // verificando se o primeiro valor da linha de cima é igual ao primeiro da linha de baixo negativado, quando isso acontece é necessario apenas somar as linhas.
-             if (valAux1 == -(valAux2)) {
-                 for (var i = pos; i < vet1.length; i++) {
-                     vet2[i] = vet1[i] + vet2[i];
-                 }
+             if (valAux1 != -(valAux2)) {
 
-             } else {
                  // multiplicando a linha de cima pelo primeiro valor da linha de baixo com o sinal invertido.
                  for (var i = pos; i < vet1.length; i++) {
                      vet1[i] = vet1[i] * -valAux2;
@@ -203,13 +199,13 @@
                          vet2[i] = vet2[i] * valAux1;
                      }
                  }
-                 // somando as duas linhas e salvando na segunda linha
-                 for (var i = pos; i < vet1.length; i++) {
-                     vet2[i] = vet1[i] + vet2[i];
-                 }
-
+             }
+             // somando as duas linhas e salvando na segunda linha
+             for (var i = pos; i < vet1.length; i++) {
+                 vet2[i] = vet1[i] + vet2[i];
              }
          }
+
          // retornando vetor com o resultado da segunda linha.
          return vet2;
      }
