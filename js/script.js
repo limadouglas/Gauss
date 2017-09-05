@@ -112,13 +112,13 @@
 
 
      gauss = function() {
-
+         // Organizando a estrutura da tabela(Triangulo de Zeros).
          for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
 
              var linha = [];
              var linhaAux = [];
 
-             // organizar linhas por tamanho do pivo
+             // organizar linhas por tamanho absoluto do pivo
              for (var i = posLinha + 1; i < numLinhas; i++) {
                  var linhaUm = getLinha(posLinha);
                  var linhaDois = getLinha(i);
@@ -127,54 +127,67 @@
                      setLinha(linhaDois, posLinha);
                      setLinha(linhaUm, i);
                  }
-
-
              }
 
-
-             for (var i = posColuna; i < numColunas; i++) {
-                 linha[i] = parseInt(celula(posLinha, i));
-             }
+             // atualizando valor da linha
+             linha = getLinha(posLinha);
 
 
              for (var posLinhaCalc = posLinha + 1; posLinhaCalc < numLinhas; posLinhaCalc++) {
+
+                 // atualizando vetor
+                 linhaAux = getLinha(posLinhaCalc, i);
+
                  // zerando valores iniciais do vetor(valores já calculados)
                  for (var i = 0; i < posColuna; i++) {
                      linha[i] = 0;
                      linhaAux[i] = 0;
-                 }
-                 // atualizando vetor
-                 for (var i = posColuna; i < numColunas; i++) {
-                     linhaAux[i] = parseInt(celula(posLinhaCalc, i));
                  }
 
                  linhaAux = calcVetor(linha, linhaAux, posColuna);
                  //atualizar tabela
                  setLinha(linhaAux, posLinhaCalc);
              }
-
          }
 
-         for (var posLinha = numLinhas; posLinha < 0; posLinha--) {
-             var linha = [];
-             var linhaAux = [];
-             var result = [];
 
-             for (var i = 0; i < numColunas; i++) {
-                 linha[i] = parseInt(celula(posLinha, i));
+         // calculo final descobrindo os valores de Xn
+         var xn;
+         for (var posLinha = numLinhas - 1, posColuna = numColunas - 2; posLinha >= 0; posLinha--, posColuna--) {
+             // calculando o valor de x
+             xn = (celula(posLinha, numColunas - 1) / celula(posLinha, posColuna));
+
+             // atualizando linha atual da tabela.
+             var linha = getLinha(posLinha);
+             linha[numColunas - 1] = xn;
+             linha[posColuna] = 0;
+             setLinha(linha, posLinha);
+
+             // multiplicando toda coluna de xn pelo valor descoberto na ultima linha.
+             for (var i = 0; i < posLinha; i++) {
+                 var linha = getLinha(i);
+                 linha[numColunas - 1] = linha[numColunas - 1] + (-(linha[posColuna] * xn));
+                 linha[posColuna] = 0;
+                 setLinha(linha, i);
              }
 
-             result[numColunas - 1] = linha[numColunas - 1] / linha[numColunas - 2];
          }
 
+         for (var i = 0; i < numColunas - 1; i++) {
+             var novaLinha = $('tr');
+             var cols = "<td>X" + String(i) + "</td>";
+             cols = "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+             novaLinha.append(cols);
+             $('#tabela-resultado tbody').append(novaLinha);
+         }
 
      };
 
 
-
-     function celula(a, b) {
-         var tr = $('#tabela-gauss tbody tr').eq(a);
-         return tr.find('input').eq(b).val();
+     // esta funcao recebe as coordenas de uma celula da tabela e a retorna no tipo inteiro.
+     function celula(linha, coluna) {
+         var tr = $('#tabela-gauss tbody tr').eq(linha);
+         return parseFloat(tr.find('input').eq(coluna).val());
      }
 
 
@@ -194,7 +207,7 @@
                      vet1[i] = vet1[i] * -valAux2;
                  }
                  // caso os valores não sejam divisiveis(resto diferente de 0) é necessario multiplicar o primeiro de cima pela linha de baixo.
-                 if ((valAux1 / valAux2) != Number.isInteger) {
+                 if ((valAux1 % valAux2) != 0) {
                      for (var i = pos; i < vet2.length; i++) {
                          vet2[i] = vet2[i] * valAux1;
                      }
@@ -210,16 +223,18 @@
          return vet2;
      }
 
+
      function getLinha(linha) {
          var tr = $('#tabela-gauss tbody tr').eq(linha);
          var vetor = [];
 
          for (var i = 0; i < numColunas; i++) {
-             vetor[i] = parseInt(tr.find('input').eq(i).val());
+             vetor[i] = parseFloat(tr.find('input').eq(i).val());
          }
 
          return vetor;
      }
+
 
      function setLinha(vetor, linha) {
 
@@ -232,8 +247,3 @@
 
 
  })(jQuery);
-
- /*
-      5 * -2 2 * 5
-      2 * -2 2 * 2
-*/
