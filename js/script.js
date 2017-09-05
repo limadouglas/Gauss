@@ -118,6 +118,20 @@
              var linha = [];
              var linhaAux = [];
 
+             // organizar linhas por tamanho do pivo
+             for (var i = posLinha + 1; i < numLinhas; i++) {
+                 var linhaUm = getLinha(posLinha);
+                 var linhaDois = getLinha(i);
+
+                 if (Math.abs(linhaUm[posColuna]) < Math.abs(linhaDois[posColuna])) {
+                     setLinha(linhaDois, posLinha);
+                     setLinha(linhaUm, i);
+                 }
+
+
+             }
+
+
              for (var i = posColuna; i < numColunas; i++) {
                  linha[i] = parseInt(celula(posLinha, i));
              }
@@ -135,9 +149,8 @@
                  }
 
                  linhaAux = calcVetor(linha, linhaAux, posColuna);
-                 console.log(linhaAux);
                  //atualizar tabela
-                 atualizTabela(linhaAux, posLinhaCalc);
+                 setLinha(linhaAux, posLinhaCalc);
              }
 
          }
@@ -152,18 +165,7 @@
              }
 
              result[numColunas - 1] = linha[numColunas - 1] / linha[numColunas - 2];
-
-
-
-             /*
-                          for (var i = 0; i < numLinhas; i++) {
-                              var tr = $('#tabela-gauss tbody tr').eq(i);
-                              tr.find('input').eq(b).val(String(tr.find('input').eq(b).val() * result[numColunas-1]));
-                          }
-             */
-
          }
-
 
 
      };
@@ -178,31 +180,52 @@
 
 
      function calcVetor(vet1, vet2, pos) {
-
+         // variaveis auxliares para salvar os primeiros valores de cada linha
          var valAux1 = vet1[pos],
              valAux2 = vet2[pos];
 
-         for (var i = pos; i < vet2.length; i++) {
-             vet2[i] = vet2[i] * valAux1;
-         }
+         // se o primeiro valor da linha de baixo for igual a 0 então não preciso calcular.
+         if (valAux2 != 0) {
+             // verificando se o primeiro valor da linha de cima é igual ao primeiro da linha de baixo negativado, quando isso acontece é necessario apenas somar as linhas.
+             if (valAux1 == -(valAux2)) {
+                 for (var i = pos; i < vet1.length; i++) {
+                     vet2[i] = vet1[i] + vet2[i];
+                 }
 
+             } else {
+                 // multiplicando a linha de cima pelo primeiro valor da linha de baixo com o sinal invertido.
+                 for (var i = pos; i < vet1.length; i++) {
+                     vet1[i] = vet1[i] * -valAux2;
+                 }
+                 // caso os valores não sejam divisiveis(resto diferente de 0) é necessario multiplicar o primeiro de cima pela linha de baixo.
+                 if ((valAux1 / valAux2) != Number.isInteger) {
+                     for (var i = pos; i < vet2.length; i++) {
+                         vet2[i] = vet2[i] * valAux1;
+                     }
+                 }
+                 // somando as duas linhas e salvando na segunda linha
+                 for (var i = pos; i < vet1.length; i++) {
+                     vet2[i] = vet1[i] + vet2[i];
+                 }
 
-         if ((valAux1 / valAux2) != Number.isInteger) {
-             for (var i = pos; i < vet1.length; i++) {
-                 vet1[i] = vet1[i] * -valAux2;
              }
          }
-
-         for (var i = pos; i < vet1.length; i++) {
-             vet2[i] = vet1[i] + vet2[i];
-         }
-
+         // retornando vetor com o resultado da segunda linha.
          return vet2;
      }
 
+     function getLinha(linha) {
+         var tr = $('#tabela-gauss tbody tr').eq(linha);
+         var vetor = [];
 
+         for (var i = 0; i < numColunas; i++) {
+             vetor[i] = parseInt(tr.find('input').eq(i).val());
+         }
 
-     function atualizTabela(vetor, linha) {
+         return vetor;
+     }
+
+     function setLinha(vetor, linha) {
 
          var tr = $('#tabela-gauss tbody tr').eq(linha);
 
