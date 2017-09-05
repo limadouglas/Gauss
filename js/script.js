@@ -1,10 +1,10 @@
  var numLinhas = 3,
      numColunas = 4;
 
- (function ($) {
+ (function($) {
 
 
-     addLinha = function () {
+     addLinha = function() {
          var novaLinha = $('<tr>');
          var cols = "";
 
@@ -24,7 +24,7 @@
 
 
 
-     addColuna = function () {
+     addColuna = function() {
 
          var cols = '<th>' + ("X" + numColunas) + '</th>';
 
@@ -51,7 +51,7 @@
 
 
 
-     delLinha = function (handler) {
+     delLinha = function(handler) {
          if (numLinhas > 3) {
              var tr = $(handler).closest('tr');
              tr.remove();
@@ -62,7 +62,7 @@
 
 
 
-     delColuna = function (handler) {
+     delColuna = function(handler) {
          if (numColunas > 4) {
              var indiceCol = $(handler).closest('td').index();
 
@@ -105,42 +105,18 @@
 
 
 
-     $("#tabela-gauss").on("click", "input", function () {
+     $("#tabela-gauss").on("click", "input", function() {
          //console.log($(this).val());
      });
 
 
 
-     gauss = function () {
+     gauss = function() {
 
          for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
 
              var linha = [];
              var linhaAux = [];
-             var maiorPivoLinha = 0;
-             var auxPivoLinha = 0;
-             var vetorAux=[];
-
-             // verificando pivo e alterando posições se necessario
-             for (var i = posColuna; i < numLinhas; i++) {
-
-                 auxPivoLinha = parseInt(celula(i, 0));
-
-                 if (auxPivoLinha > maiorPivoLinha) {
-                     maiorPivoLinha = i;
-                 }
-             }
-
-             for (var i = 0; i < numLinhas; i++) {
-                 var tr = $('#tabela-gauss tbody tr').eq(linha);
-
-                 for (var i = 0; i < vetor.length; i++) {
-                     vetorAux[i] = tr.find('input').eq(i).val();
-                 }
-                 
-
-             }
-
 
              for (var i = posColuna; i < numColunas; i++) {
                  linha[i] = parseInt(celula(posLinha, i));
@@ -153,46 +129,42 @@
                      linha[i] = 0;
                      linhaAux[i] = 0;
                  }
-
                  // atualizando vetor
                  for (var i = posColuna; i < numColunas; i++) {
                      linhaAux[i] = parseInt(celula(posLinhaCalc, i));
                  }
 
                  linhaAux = calcVetor(linha, linhaAux, posColuna);
-
+                 console.log(linhaAux);
                  //atualizar tabela
                  atualizTabela(linhaAux, posLinhaCalc);
              }
 
          }
 
+         for (var posLinha = numLinhas; posLinha < 0; posLinha--) {
+             var linha = [];
+             var linhaAux = [];
+             var result = [];
 
+             for (var i = 0; i < numColunas; i++) {
+                 linha[i] = parseInt(celula(posLinha, i));
+             }
 
-         /*
-                  for (var posLinha = numLinhas; posLinha < 0; posLinha--) {
-                      var linha = [];
-                      var linhaAux = [];
-                      var result = [];
-
-                      for (var i = 0; i < numColunas; i++) {
-                          linha[i] = parseInt(celula(posLinha, i));
-                      }
-
-                      result[numColunas - 1] = linha[numColunas - 1] / linha[numColunas - 2];
+             result[numColunas - 1] = linha[numColunas - 1] / linha[numColunas - 2];
 
 
 
-                      
-                                   for (var i = 0; i < numLinhas; i++) {
-                                       var tr = $('#tabela-gauss tbody tr').eq(i);
-                                       tr.find('input').eq(b).val(String(tr.find('input').eq(b).val() * result[numColunas-1]));
-                                   }
-                      
+             /*
+                          for (var i = 0; i < numLinhas; i++) {
+                              var tr = $('#tabela-gauss tbody tr').eq(i);
+                              tr.find('input').eq(b).val(String(tr.find('input').eq(b).val() * result[numColunas-1]));
+                          }
+             */
 
-                  }
+         }
 
-         */
+
 
      };
 
@@ -204,7 +176,7 @@
      }
 
 
-     // calculo principal linha posterior menos inferior
+
      function calcVetor(vet1, vet2, pos) {
 
          var valAux1 = vet1[pos],
@@ -244,6 +216,5 @@
 
  /*
       5 * -2 2 * 5
-
       2 * -2 2 * 2
 */
