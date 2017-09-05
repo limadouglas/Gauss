@@ -1,10 +1,10 @@
  var numLinhas = 3,
      numColunas = 4;
 
- (function($) {
+ (function ($) {
 
 
-     addLinha = function() {
+     addLinha = function () {
          var novaLinha = $('<tr>');
          var cols = "";
 
@@ -24,7 +24,7 @@
 
 
 
-     addColuna = function() {
+     addColuna = function () {
 
          var cols = '<th>' + ("X" + numColunas) + '</th>';
 
@@ -51,7 +51,7 @@
 
 
 
-     delLinha = function(handler) {
+     delLinha = function (handler) {
          if (numLinhas > 3) {
              var tr = $(handler).closest('tr');
              tr.remove();
@@ -62,7 +62,7 @@
 
 
 
-     delColuna = function(handler) {
+     delColuna = function (handler) {
          if (numColunas > 4) {
              var indiceCol = $(handler).closest('td').index();
 
@@ -105,13 +105,13 @@
 
 
 
-     $("#tabela-gauss").on("click", "input", function() {
+     $("#tabela-gauss").on("click", "input", function () {
          //console.log($(this).val());
      });
 
 
 
-     gauss = function() {
+     gauss = function () {
          // Organizando a estrutura da tabela(Triangulo de Zeros).
          for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
 
@@ -138,13 +138,9 @@
                  // atualizando vetor
                  linhaAux = getLinha(posLinhaCalc, i);
 
-                 // zerando valores iniciais do vetor(valores já calculados)
-                 for (var i = 0; i < posColuna; i++) {
-                     linha[i] = 0;
-                     linhaAux[i] = 0;
-                 }
 
                  linhaAux = calcVetor(linha, linhaAux, posColuna);
+
                  //atualizar tabela
                  setLinha(linhaAux, posLinhaCalc);
              }
@@ -156,7 +152,7 @@
          for (var posLinha = numLinhas - 1, posColuna = numColunas - 2; posLinha >= 0; posLinha--, posColuna--) {
              // calculando o valor de x
              xn = (celula(posLinha, numColunas - 1) / celula(posLinha, posColuna));
-
+             console.log(xn);
              // atualizando linha atual da tabela.
              var linha = getLinha(posLinha);
              linha[numColunas - 1] = xn;
@@ -173,14 +169,18 @@
 
          }
 
-         for (var i = 0; i < numColunas - 1; i++) {
-             var novaLinha = $('tr');
-             var cols = "<td>X" + String(i) + "</td>";
-             cols = "<td>" + String(celula(i, numColunas - 1)) + "</td>";
-             novaLinha.append(cols);
-             $('#tabela-resultado tbody').append(novaLinha);
-         }
 
+
+
+         for (var i = 0; i < numColunas - 1; i++) {
+             var novaLinha = $('<tr>');
+                var cols = "<td>X" + String(i) + "</td>";
+                cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+                novaLinha.append(cols);
+                $('#tblresultado tbody').append(novaLinha);
+         }
+         //console.log(novaLinha);
+        
      };
 
 
@@ -199,23 +199,21 @@
 
          // se o primeiro valor da linha de baixo for igual a 0 então não preciso calcular.
          if (valAux2 != 0) {
-             // verificando se o primeiro valor da linha de cima é igual ao primeiro da linha de baixo negativado, quando isso acontece é necessario apenas somar as linhas.
-             if (valAux1 != -(valAux2)) {
 
-                 // multiplicando a linha de cima pelo primeiro valor da linha de baixo com o sinal invertido.
-                 for (var i = pos; i < vet1.length; i++) {
-                     vet1[i] = vet1[i] * -valAux2;
-                 }
-                 // caso os valores não sejam divisiveis(resto diferente de 0) é necessario multiplicar o primeiro de cima pela linha de baixo.
-                 if ((valAux1 % valAux2) != 0) {
-                     for (var i = pos; i < vet2.length; i++) {
-                         vet2[i] = vet2[i] * valAux1;
-                     }
-                 }
+
+             // multiplicando a linha de cima pelo primeiro valor da linha de baixo com o sinal invertido.
+             for (var i = pos; i < vet1.length; i++) {
+                 vet1[i] = vet1[i] * valAux2;
              }
+             // caso os valores não sejam divisiveis(resto diferente de 0) é necessario multiplicar o primeiro de cima pela linha de baixo.
+
+             for (var i = pos; i < vet2.length; i++) {
+                 vet2[i] = vet2[i] * valAux1;
+             }
+
              // somando as duas linhas e salvando na segunda linha
              for (var i = pos; i < vet1.length; i++) {
-                 vet2[i] = vet1[i] + vet2[i];
+                 vet2[i] = vet1[i] - vet2[i];
              }
          }
 
