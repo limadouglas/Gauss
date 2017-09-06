@@ -33,7 +33,21 @@ td {
     font-weight: bold;
 }
 
-#passos {
-    border-top-left-radius: 0;
+#btn-anterior {
+    border-bottom-right-radius: 0;
     border-top-right-radius: 0;
+}
+
+#btn-calcular {
+    border-radius: 0;
+}
+
+#btn-proximo {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.btn-conjunto {
+    display: table;
+    width: 100%;
 }

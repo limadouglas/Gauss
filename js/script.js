@@ -1,16 +1,21 @@
  var numLinhas = 3,
      numColunas = 4;
 
- (function ($) {
+ (function($) {
 
+     var numEstados = 0,
+         estadoAtual = 0;
 
-     addLinha = function () {
+     var tabelas = [];
+
+     addLinha = function() {
          var novaLinha = $('<tr>');
          var cols = "";
 
          for (var i = 0; i < numColunas; i++) {
              cols += '<td id="val-td"><input type="text" value="0" class="val-input"></td>';
          }
+
          cols += '<td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-linha" onclick="delLinha(this);"></td>';
 
          novaLinha.append(cols);
@@ -24,7 +29,7 @@
 
 
 
-     addColuna = function () {
+     addColuna = function() {
 
          var cols = '<th>' + ("X" + numColunas) + '</th>';
 
@@ -51,7 +56,7 @@
 
 
 
-     delLinha = function (handler) {
+     delLinha = function(handler) {
          if (numLinhas > 3) {
              var tr = $(handler).closest('tr');
              tr.remove();
@@ -62,7 +67,7 @@
 
 
 
-     delColuna = function (handler) {
+     delColuna = function(handler) {
          if (numColunas > 4) {
              var indiceCol = $(handler).closest('td').index();
 
@@ -105,13 +110,23 @@
 
 
 
-     $("#tabela-gauss").on("click", "input", function () {
+     $("#tabela-gauss").on("click", "input", function() {
          //console.log($(this).val());
      });
 
 
 
-     gauss = function () {
+     gauss = function() {
+         // resetando variaveis
+         if (estadoAtual != 0) {
+             estadoAtual = 0;
+             avancarEstado();
+             numEstados = 0;
+             tabelas = [];
+         }
+         // salvando estado inicial da tabela.
+         salvarEstado();
+
          // Organizando a estrutura da tabela(Triangulo de Zeros).
          for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
 
@@ -126,23 +141,24 @@
                  if (Math.abs(linhaUm[posColuna]) < Math.abs(linhaDois[posColuna])) {
                      setLinha(linhaDois, posLinha);
                      setLinha(linhaUm, i);
+                     salvarEstado();
                  }
              }
 
              // atualizando valor da linha
              linha = getLinha(posLinha);
 
-
              for (var posLinhaCalc = posLinha + 1; posLinhaCalc < numLinhas; posLinhaCalc++) {
 
                  // atualizando vetor
                  linhaAux = getLinha(posLinhaCalc, i);
 
-
+                 // calculando linhas
                  linhaAux = calcVetor(linha, linhaAux, posColuna);
 
                  //atualizar tabela
                  setLinha(linhaAux, posLinhaCalc);
+                 salvarEstado();
              }
          }
 
@@ -158,30 +174,52 @@
              linha[numColunas - 1] = xn;
              linha[posColuna] = 0;
              setLinha(linha, posLinha);
+             salvarEstado();
 
              // multiplicando toda coluna de xn pelo valor descoberto na ultima linha.
              for (var i = 0; i < posLinha; i++) {
                  var linha = getLinha(i);
-                 linha[numColunas - 1] = linha[numColunas - 1] + (-(linha[posColuna] * xn));
+                 linha[posColuna] = (linha[posColuna] * xn);
+                 setLinha(linha, i);
+                 salvarEstado();
+                 linha[numColunas - 1] = linha[numColunas - 1] + (-linha[posColuna]);
                  linha[posColuna] = 0;
                  setLinha(linha, i);
+                 salvarEstado();
              }
 
          }
 
 
-
+         // removendo valores antigos da tabela de resultado.
+         $('#tabela-resultado tbody').remove();
+         $('#tabela-resultado').append("<tbody></tbody>");
 
          for (var i = 0; i < numColunas - 1; i++) {
              var novaLinha = $('<tr>');
-                var cols = "<td>X" + String(i) + "</td>";
-                cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
-                novaLinha.append(cols);
-                $('#tblresultado tbody').append(novaLinha);
+             var cols = "<td>X" + String(i) + "</td>";
+             cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+             novaLinha.append(cols);
+             $('#tabela-resultado tbody').append(novaLinha);
          }
          //console.log(novaLinha);
-        
+
      };
+
+
+
+     // salvando estado da tabela.
+     function salvarEstado() {
+
+         var tabelaEstado = [];
+
+         for (var i = 0; i < numLinhas; i++) {
+             tabelaEstado[i] = getLinha(i);
+         }
+
+         tabelas[numEstados++] = tabelaEstado;
+
+     }
 
 
      // esta funcao recebe as coordenas de uma celula da tabela e a retorna no tipo inteiro.
@@ -242,6 +280,71 @@
              tr.find('input').eq(i).val(String(vetor[i]));
          }
      }
+
+
+
+     // ir para o proximo estado
+     proximo = function() {
+         if (estadoAtual == 0) {
+             gauss();
+             //zerarTabela();
+         }
+         avancarEstado();
+     }
+
+
+     // ir para o estado anterior
+     anterior = function() {
+         if (estadoAtual == 0) {
+             gauss();
+             //zerarTabela();
+         }
+         retrocederEstado();
+     }
+
+
+     function zerarTabela() {
+
+         var vetor = [];
+         for (var i = 0; i < numColunas; i++) {
+             vetor[i] = 0;
+         }
+
+         for (var i = 0; i < numLinhas; i++) {
+             setLinha(vetor, i);
+         }
+     }
+
+
+     function avancarEstado() {
+         if (estadoAtual <= numEstados) {
+             estadoAtual++;
+
+             for (var i = 0; i < numLinhas; i++) {
+                 setLinha(tabelas[estadoAtual][i], i);
+             }
+         }
+
+
+
+     }
+
+
+     function retrocederEstado() {
+         if (estadoAtual > 0) {
+             estadoAtual--;
+
+             for (var i = 0; i < numLinhas; i++) {
+                 setLinha(tabelas[estadoAtual][i], i);
+             }
+         }
+
+
+
+
+     }
+
+
 
 
  })(jQuery);
