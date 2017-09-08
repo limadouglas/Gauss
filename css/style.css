@@ -1,53 +1,58 @@
-th,
-td {
-    text-align: center;
-    background-color: #f8f9fa;
-}
-
-#nova-coluna {
-    vertical-align: middle;
-    text-align: center;
-}
-
-.val-input {
-    border: 0;
-    margin: 0;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-    padding: .75rem;
-    outline: 0;
-}
-
-.table thead th {
-    color: #fff;
-    background-color: #61BECD;
-    border-color: #61BECD;
-}
-
-.table input {
-    background-color: transparent;
-}
-
-.bold {
-    font-weight: bold;
-}
-
-#btn-anterior {
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-}
-
-#btn-calcular {
-    border-radius: 0;
-}
-
-#btn-proximo {
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-}
-
-.btn-conjunto {
-    display: table;
-    width: 100%;
-}
+        th,
+        td {
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        #nova-coluna {
+            vertical-align: middle;
+            text-align: center;
+        }
+        
+        .val-input {
+            border: 0;
+            margin: 0;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            padding: .75rem;
+            outline: 0;
+        }
+        
+        .table thead th {
+            color: #fff;
+            background-color: #61BECD;
+            border-color: #61BECD;
+        }
+        
+        .table input {
+            background-color: transparent;
+        }
+        
+        .bold {
+            font-weight: bold;
+        }
+        
+        #btn-anterior {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+        
+        #btn-calcular {
+            border-radius: 0;
+            margin: -0.3rem;
+        }
+        
+        #btn-proximo {
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+        }
+        
+        .btn-conjunto {
+            display: table center;
+            width: 100%;
+        }
+        
+        #resultadoX {
+            font-weight: bold;
+        }

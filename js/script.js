@@ -23,8 +23,6 @@
          novaLinha.append(cols);
          novaLinha.insertAfter($('#tabela-gauss tbody tr').eq(numLinhas - 1));
 
-         //$('#nova-coluna').attr('rowspan', 1);
-
          numLinhas++;
          return false;
      };
@@ -122,102 +120,101 @@
 
          if (!jaCalculado) {
              jaCalculado = true;
-         }
 
-         // resetando variaveis
-         if (estadoAtual != 0) {
+
+             // resetando variaveis
              estadoAtual = 0;
-             avancarEstado();
+             //avancarEstado();
              numEstados = 0;
              tabelas = [];
-         }
-         // salvando estado inicial da tabela.
-         salvarEstado();
 
-         // Organizando a estrutura da tabela(Triangulo de Zeros).
-         for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
-
-             var linha = [];
-             var linhaAux = [];
-
-             // organizar linhas por tamanho absoluto do pivo
-             for (var i = posLinha + 1; i < numLinhas; i++) {
-                 var linhaUm = getLinha(posLinha);
-                 var linhaDois = getLinha(i);
-
-                 if (Math.abs(linhaUm[posColuna]) < Math.abs(linhaDois[posColuna])) {
-                     setLinha(linhaDois, posLinha);
-                     setLinha(linhaUm, i);
-                     salvarEstado();
-                 }
-             }
-
-             // atualizando valor da linha
-             linha = getLinha(posLinha);
-
-             for (var posLinhaCalc = posLinha + 1; posLinhaCalc < numLinhas; posLinhaCalc++) {
-
-                 // atualizando vetor
-                 linhaAux = getLinha(posLinhaCalc, i);
-
-                 // calculando linhas
-                 linhaAux = calcVetor(linha, linhaAux, posColuna, posLinha, posLinhaCalc);
-             }
-
-         }
-
-
-         // calculo final descobrindo os valores de Xn
-         var xn;
-         for (var posLinha = numLinhas - 1, posColuna = numColunas - 2; posLinha >= 0; posLinha--, posColuna--) {
-
-             // caso de divisão por zero a variavel semSolução será verdadeira e o programa irá finalizar os calculos.
-             if (celula(posLinha, posColuna) == 0) { semSolucao = true; break; }
-
-             // calculando o valor de x
-             xn = (celula(posLinha, numColunas - 1) / celula(posLinha, posColuna));
-             console.log(xn);
-             // atualizando linha atual da tabela.
-             var linha = getLinha(posLinha);
-             linha[numColunas - 1] = xn;
-             linha[posColuna] = 0;
-             setLinha(linha, posLinha);
+             // salvando estado inicial da tabela.
              salvarEstado();
 
-             // multiplicando toda coluna de xn pelo valor descoberto na ultima linha.
-             for (var i = 0; i < posLinha; i++) {
-                 var linha = getLinha(i);
-                 linha[posColuna] = (linha[posColuna] * xn);
-                 setLinha(linha, i);
-                 salvarEstado();
-                 linha[numColunas - 1] = linha[numColunas - 1] + (-linha[posColuna]);
-                 linha[posColuna] = 0;
-                 setLinha(linha, i);
-                 salvarEstado();
+             // Organizando a estrutura da tabela(Triangulo de Zeros).
+             for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
+
+                 var linha = [];
+                 var linhaAux = [];
+
+                 // organizar linhas por tamanho absoluto do pivo
+                 for (var i = posLinha + 1; i < numLinhas; i++) {
+                     var linhaUm = getLinha(posLinha);
+                     var linhaDois = getLinha(i);
+
+                     if (Math.abs(linhaUm[posColuna]) < Math.abs(linhaDois[posColuna])) {
+                         setLinha(linhaDois, posLinha);
+                         setLinha(linhaUm, i);
+                         salvarEstado();
+                     }
+                 }
+
+                 // atualizando valor da linha
+                 linha = getLinha(posLinha);
+
+                 for (var posLinhaCalc = posLinha + 1; posLinhaCalc < numLinhas; posLinhaCalc++) {
+
+                     // atualizando vetor
+                     linhaAux = getLinha(posLinhaCalc, i);
+
+                     // calculando linhas
+                     linhaAux = calcVetor(linha, linhaAux, posColuna, posLinha, posLinhaCalc);
+                 }
+
              }
 
-         }
 
-         // removendo valores antigos da tabela de resultado.
-         $('#tabela-resultado tbody').remove();
-         $('#tabela-resultado').append("<tbody></tbody>");
+             // calculo final descobrindo os valores de Xn
+             var xn;
+             for (var posLinha = numLinhas - 1, posColuna = numColunas - 2; posLinha >= 0; posLinha--, posColuna--) {
 
-         if (!semSolucao) {
-             for (var i = 0; i < numColunas - 1; i++) {
-                 var novaLinha = $('<tr>');
-                 var cols = "<td>X" + String(i + 1) + "</td>";
-                 cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+                 // caso de divisão por zero a variavel semSolução será verdadeira e o programa irá finalizar os calculos.
+                 if (celula(posLinha, posColuna) == 0) { semSolucao = true; break; }
+
+                 // calculando o valor de x
+                 xn = (celula(posLinha, numColunas - 1) / celula(posLinha, posColuna));
+                 console.log(xn);
+                 // atualizando linha atual da tabela.
+                 var linha = getLinha(posLinha);
+                 linha[numColunas - 1] = xn;
+                 linha[posColuna] = 0;
+                 setLinha(linha, posLinha);
+                 salvarEstado();
+
+                 // multiplicando toda coluna de xn pelo valor descoberto na ultima linha.
+                 for (var i = 0; i < posLinha; i++) {
+                     var linha = getLinha(i);
+                     linha[posColuna] = (linha[posColuna] * xn);
+                     setLinha(linha, i);
+                     salvarEstado();
+                     linha[numColunas - 1] = linha[numColunas - 1] + (-linha[posColuna]);
+                     linha[posColuna] = 0;
+                     setLinha(linha, i);
+                     salvarEstado();
+                 }
+
+             }
+
+             // removendo valores antigos da tabela de resultado.
+             $('#tabela-resultado tbody').remove();
+             $('#tabela-resultado').append("<tbody></tbody>");
+
+             // caso sem solução seja falso os resultados serão mostrados, senão uma mensagem 'sem resultados' irá aparecer.
+             if (!semSolucao) {
+                 for (var i = 0; i < numColunas - 1; i++) {
+                     var novaLinha = $('<tr class="table-info">');
+                     var cols = "<td id='resultadoX'>X" + String(i + 1) + "</td>";
+                     cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+                     novaLinha.append(cols);
+                     $('#tabela-resultado tbody').append(novaLinha);
+                 }
+             } else {
+                 var novaLinha = $('<tr class="table-danger">');
+                 var cols = "<td id='resultadoX'>Sem Solução!</td>";
                  novaLinha.append(cols);
                  $('#tabela-resultado tbody').append(novaLinha);
              }
-         } else {
-             var novaLinha = $('<tr>');
-             var cols = "<td>Sem Solução!</td>";
-             novaLinha.append(cols);
-             $('#tabela-resultado tbody').append(novaLinha);
          }
-
-         //console.log(novaLinha);
 
      };
 
@@ -232,7 +229,6 @@
          }
 
          tabelas[numEstados++] = tabelaEstado;
-
      }
 
 
@@ -297,7 +293,7 @@
          return vet2;
      }
 
-
+     // obter valor de uma linha
      function getLinha(linha) {
          var tr = $('#tabela-gauss tbody tr').eq(linha);
          var vetor = [];
@@ -309,7 +305,7 @@
          return vetor;
      }
 
-
+     // atualizar valores de uma linha
      function setLinha(vetor, linha) {
 
          var tr = $('#tabela-gauss tbody tr').eq(linha);
@@ -319,6 +315,7 @@
          }
      }
 
+     // calcular tudo de uma vez e mostrar resultado
      calcular = function() {
          if (!jaCalculado) {
              gauss();
@@ -333,21 +330,6 @@
              gauss();
          }
 
-         avancarEstado();
-     }
-
-
-     // ir para o estado anterior
-     anterior = function() {
-         if (!jaCalculado) {
-             gauss();
-         }
-
-         retrocederEstado();
-     }
-
-
-     function avancarEstado() {
          if (estadoAtual < numEstados - 1) {
              estadoAtual++;
          } else {
@@ -357,12 +339,15 @@
          for (var i = 0; i < numLinhas; i++) {
              setLinha(tabelas[estadoAtual][i], i);
          }
-
-
      }
 
 
-     function retrocederEstado() {
+     // ir para o estado anterior
+     anterior = function() {
+         if (!jaCalculado) {
+             gauss();
+         }
+
          if (estadoAtual > 0) {
              estadoAtual--;
          } else {
@@ -374,7 +359,9 @@
          }
      }
 
-
-
+     // esta função reconhece que algum valor da tabela foi alterado e permite que os valores possão ser recalculados, atribuindo false a variavel jaCalculado.
+     $('input').click(function() {
+         jaCalculado = false;
+     });
 
  })(jQuery);
