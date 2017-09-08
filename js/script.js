@@ -5,6 +5,8 @@
 
      var numEstados = 0,
          estadoAtual = 0;
+     var semSolucao = false;
+     var jaCalculado = false;
 
      var tabelas = [];
 
@@ -57,7 +59,7 @@
 
 
      delLinha = function(handler) {
-         if (numLinhas > 3) {
+         if (numLinhas > 2) {
              var tr = $(handler).closest('tr');
              tr.remove();
              numLinhas--;
@@ -68,7 +70,7 @@
 
 
      delColuna = function(handler) {
-         if (numColunas > 4) {
+         if (numColunas > 3) {
              var indiceCol = $(handler).closest('td').index();
 
              for (var i = 0; i < numLinhas; i++) {
@@ -117,6 +119,11 @@
 
 
      gauss = function() {
+
+         if (!jaCalculado) {
+             jaCalculado = true;
+         }
+
          // resetando variaveis
          if (estadoAtual != 0) {
              estadoAtual = 0;
@@ -154,18 +161,19 @@
                  linhaAux = getLinha(posLinhaCalc, i);
 
                  // calculando linhas
-                 linhaAux = calcVetor(linha, linhaAux, posColuna);
-
-                 //atualizar tabela
-                 setLinha(linhaAux, posLinhaCalc);
-                 salvarEstado();
+                 linhaAux = calcVetor(linha, linhaAux, posColuna, posLinha, posLinhaCalc);
              }
+
          }
 
 
          // calculo final descobrindo os valores de Xn
          var xn;
          for (var posLinha = numLinhas - 1, posColuna = numColunas - 2; posLinha >= 0; posLinha--, posColuna--) {
+
+             // caso de divisão por zero a variavel semSolução será verdadeira e o programa irá finalizar os calculos.
+             if (celula(posLinha, posColuna) == 0) { semSolucao = true; break; }
+
              // calculando o valor de x
              xn = (celula(posLinha, numColunas - 1) / celula(posLinha, posColuna));
              console.log(xn);
@@ -190,22 +198,28 @@
 
          }
 
-
          // removendo valores antigos da tabela de resultado.
          $('#tabela-resultado tbody').remove();
          $('#tabela-resultado').append("<tbody></tbody>");
 
-         for (var i = 0; i < numColunas - 1; i++) {
+         if (!semSolucao) {
+             for (var i = 0; i < numColunas - 1; i++) {
+                 var novaLinha = $('<tr>');
+                 var cols = "<td>X" + String(i + 1) + "</td>";
+                 cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+                 novaLinha.append(cols);
+                 $('#tabela-resultado tbody').append(novaLinha);
+             }
+         } else {
              var novaLinha = $('<tr>');
-             var cols = "<td>X" + String(i) + "</td>";
-             cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+             var cols = "<td>Sem Solução!</td>";
              novaLinha.append(cols);
              $('#tabela-resultado tbody').append(novaLinha);
          }
+
          //console.log(novaLinha);
 
      };
-
 
 
      // salvando estado da tabela.
@@ -230,29 +244,53 @@
 
 
 
-     function calcVetor(vet1, vet2, pos) {
+     function calcVetor(vet1, vet2, posColuna, posLinhaVet1, posLinhaVet2) {
          // variaveis auxliares para salvar os primeiros valores de cada linha
-         var valAux1 = vet1[pos],
-             valAux2 = vet2[pos];
+         var valAux1 = vet1[posColuna],
+             valAux2 = vet2[posColuna];
 
-         // se o primeiro valor da linha de baixo for igual a 0 então não preciso calcular.
-         if (valAux2 != 0) {
 
+         if (valAux1 + valAux2 == 0) {
+             // subtraindo as duas linhas e salvando na segunda linha
+             for (var i = posColuna; i < vet1.length; i++) {
+                 vet2[i] = vet1[i] + vet2[i];
+             }
+
+             //atualizar tabela
+             setLinha(vet2, posLinhaVet2);
+             salvarEstado();
+
+             // se o primeiro valor da linha de baixo for igual a 0 então não preciso calcular.
+         } else if (valAux2 != 0) {
 
              // multiplicando a linha de cima pelo primeiro valor da linha de baixo com o sinal invertido.
-             for (var i = pos; i < vet1.length; i++) {
+             for (var i = posColuna; i < vet1.length; i++) {
                  vet1[i] = vet1[i] * valAux2;
              }
-             // caso os valores não sejam divisiveis(resto diferente de 0) é necessario multiplicar o primeiro de cima pela linha de baixo.
 
-             for (var i = pos; i < vet2.length; i++) {
-                 vet2[i] = vet2[i] * valAux1;
+             //atualizar tabela
+             setLinha(vet1, posLinhaVet1);
+             salvarEstado();
+
+             // caso os valores não sejam divisiveis(resto diferente de 0) é necessario multiplicar o primeiro de cima pela linha de baixo.
+             if ((valAux1 % valAux2) != 0 || (valAux2 % valAux1) != 0) {
+
+                 for (var i = posColuna; i < vet2.length; i++) {
+                     vet2[i] = vet2[i] * valAux1;
+                 }
+                 //atualizar tabela
+                 setLinha(vet2, posLinhaVet2);
+                 salvarEstado();
              }
 
-             // somando as duas linhas e salvando na segunda linha
-             for (var i = pos; i < vet1.length; i++) {
+             // subtraindo as duas linhas e salvando na segunda linha
+             for (var i = posColuna; i < vet1.length; i++) {
                  vet2[i] = vet1[i] - vet2[i];
              }
+
+             //atualizar tabela
+             setLinha(vet2, posLinhaVet2);
+             salvarEstado();
          }
 
          // retornando vetor com o resultado da segunda linha.
@@ -281,50 +319,44 @@
          }
      }
 
+     calcular = function() {
+         if (!jaCalculado) {
+             gauss();
+         }
 
+         estadoAtual = numEstados - 1;
+     }
 
      // ir para o proximo estado
      proximo = function() {
-         if (estadoAtual == 0) {
+         if (!jaCalculado) {
              gauss();
-             //zerarTabela();
          }
+
          avancarEstado();
      }
 
 
      // ir para o estado anterior
      anterior = function() {
-         if (estadoAtual == 0) {
+         if (!jaCalculado) {
              gauss();
-             //zerarTabela();
          }
+
          retrocederEstado();
      }
 
 
-     function zerarTabela() {
-
-         var vetor = [];
-         for (var i = 0; i < numColunas; i++) {
-             vetor[i] = 0;
+     function avancarEstado() {
+         if (estadoAtual < numEstados - 1) {
+             estadoAtual++;
+         } else {
+             estadoAtual = 0;
          }
 
          for (var i = 0; i < numLinhas; i++) {
-             setLinha(vetor, i);
+             setLinha(tabelas[estadoAtual][i], i);
          }
-     }
-
-
-     function avancarEstado() {
-         if (estadoAtual <= numEstados) {
-             estadoAtual++;
-
-             for (var i = 0; i < numLinhas; i++) {
-                 setLinha(tabelas[estadoAtual][i], i);
-             }
-         }
-
 
 
      }
@@ -333,15 +365,13 @@
      function retrocederEstado() {
          if (estadoAtual > 0) {
              estadoAtual--;
-
-             for (var i = 0; i < numLinhas; i++) {
-                 setLinha(tabelas[estadoAtual][i], i);
-             }
+         } else {
+             estadoAtual = numEstados - 1;
          }
 
-
-
-
+         for (var i = 0; i < numLinhas; i++) {
+             setLinha(tabelas[estadoAtual][i], i);
+         }
      }
 
 
