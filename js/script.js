@@ -149,6 +149,13 @@
                      }
                  }
 
+                 // tratamento de erro, quando o pivo da primeira linha for igual a 0
+                 var linhaUm = getLinha(0);
+                 if (linhaUm[0] == 0) {
+                     semSolucao = true;
+                     //break;
+                 }
+
                  // atualizando valor da linha
                  linha = getLinha(posLinha);
 
@@ -169,7 +176,10 @@
              for (var posLinha = numLinhas - 1, posColuna = numColunas - 2; posLinha >= 0; posLinha--, posColuna--) {
 
                  // caso de divisão por zero a variavel semSolução será verdadeira e o programa irá finalizar os calculos.
-                 if (celula(posLinha, posColuna) == 0) { semSolucao = true; break; }
+                 if (celula(posLinha, posColuna) == 0) {
+                     semSolucao = true;
+                     break;
+                 }
 
                  // calculando o valor de x
                  xn = (celula(posLinha, numColunas - 1) / celula(posLinha, posColuna));
