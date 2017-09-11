@@ -229,27 +229,6 @@
      };
 
 
-     // salvando estado da tabela.
-     function salvarEstado() {
-
-         var tabelaEstado = [];
-
-         for (var i = 0; i < numLinhas; i++) {
-             tabelaEstado[i] = getLinha(i);
-         }
-
-         tabelas[numEstados++] = tabelaEstado;
-     }
-
-
-     // esta funcao recebe as coordenas de uma celula da tabela e a retorna no tipo inteiro.
-     function celula(linha, coluna) {
-         var tr = $('#tabela-gauss tbody tr').eq(linha);
-         return parseFloat(tr.find('input').eq(coluna).val());
-     }
-
-
-
      function calcVetor(vet1, vet2, posColuna, posLinhaVet1, posLinhaVet2) {
          // variaveis auxliares para salvar os primeiros valores de cada linha
          var valAux1 = vet1[posColuna],
@@ -301,6 +280,25 @@
 
          // retornando vetor com o resultado da segunda linha.
          return vet2;
+     }
+
+     // salvando estado da tabela.
+     function salvarEstado() {
+
+         var tabelaEstado = [];
+
+         for (var i = 0; i < numLinhas; i++) {
+             tabelaEstado[i] = getLinha(i);
+         }
+
+         tabelas[numEstados++] = tabelaEstado;
+     }
+
+
+     // esta funcao recebe as coordenas de uma celula da tabela e a retorna no tipo inteiro.
+     function celula(linha, coluna) {
+         var tr = $('#tabela-gauss tbody tr').eq(linha);
+         return parseFloat(tr.find('input').eq(coluna).val());
      }
 
      // obter valor de uma linha
@@ -370,7 +368,7 @@
      }
 
      // esta função reconhece que algum valor da tabela foi alterado e permite que os valores possão ser recalculados, atribuindo false a variavel jaCalculado.
-     $('input').click(function() {
+     $('input').on('input', function() {
          jaCalculado = false;
          semSolucao = false;
      });
