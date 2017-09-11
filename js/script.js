@@ -183,7 +183,7 @@
 
                  // calculando o valor de x
                  xn = (celula(posLinha, numColunas - 1) / celula(posLinha, posColuna));
-                 console.log(xn);
+
                  // atualizando linha atual da tabela.
                  var linha = getLinha(posLinha);
                  linha[numColunas - 1] = xn;
@@ -372,6 +372,7 @@
      // esta função reconhece que algum valor da tabela foi alterado e permite que os valores possão ser recalculados, atribuindo false a variavel jaCalculado.
      $('input').click(function() {
          jaCalculado = false;
+         semSolucao = false;
      });
 
  })(jQuery);
