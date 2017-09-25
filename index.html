@@ -17,6 +17,18 @@
     <div class="container">
         <nav class="navbar navbar-dark" style="background-color: #4DB1C1;">
             <a class="navbar-brand" href="#" style="display: inline;">Sistema Linear: Método de Gauss</a>
+            <!-- Example single danger button -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="tipoMetodo">
+                    Triangulação
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" onclick="tipoMetodo(true);">Triangulação</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" onclick="tipoMetodo(false);">Seidel</a>
+                </div>
+            </div>
+
         </nav>
         <table class="table table-bordered table-responsive" data-spy="scroll" id="tabela-gauss">
             <thead class="thead-default">
@@ -30,24 +42,24 @@
             </thead>
             <tbody>
                 <tr>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="10" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="2" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="1" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="7" class="val-input"></td>
                     <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-linha" onclick="delLinha(this);"></td>
                 </tr>
                 <tr>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="1" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="5" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="1" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="-8" class="val-input"></td>
                     <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-linha" onclick="delLinha(this);"></td>
                 </tr>
                 <tr>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
-                    <td id="val-td"><input type="text" value="0" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="2" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="3" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="10" class="val-input"></td>
+                    <td id="val-td"><input type="text" value="6" class="val-input"></td>
                     <td><img src="imagens/SVG/minus.svg" class="img-responsive" alt="deletar-linha" onclick="delLinha(this);"></td>
                 </tr>
             </tbody>
@@ -68,7 +80,7 @@
 
         <div class="btn-conjunto">
             <button type="button" class="btn btn-info btn-lg col-2" id="btn-anterior" onclick="anterior();"><img src="imagens/SVG/skip_previous.svg" alt="anterior"></button>
-            <button type="button" class="btn btn-info btn-lg col-8" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="calcular();" id="btn-calcular"><img src="imagens/SVG/tick.svg" alt="proximo"></button>
+            <button type="button" class="btn btn-info btn-lg col-8" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="calcular();" id="btn-calcular"><img src="imagens/SVG/circle_ok.svg" alt="proximo"></button>
             <button type="button" class="btn btn-info btn-lg col-2" id="btn-proximo" onclick="proximo();"><img src="imagens/SVG/skip_next.svg" alt="proximo"></button>
         </div>
 

@@ -1,5 +1,6 @@
  var numLinhas = 3,
      numColunas = 4;
+ var metodoTriangulacao = true;
 
  (function($) {
 
@@ -116,11 +117,65 @@
 
 
 
-     gauss = function() {
+     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     seidel = function() {
+         tabelas = [];
+
+         for (var posLinha = 0, posColuna = 0; posLinha < numLinhas; posLinha++, posColuna++) {
+             var linha = getLinha(posLinha);
+             var pivo = linha[posColuna];
+
+             // verificando se o valor de x é diferente de 0
+             if (linha[posColuna] == 0) {
+                 semSolucao = true;
+                 break;
+             }
+
+             linha[posColuna] = "---";
+             salvarEstado();
+
+             // invertendo sinal de todos os valores de X diferente da coluna em destaque.
+             for (var i = 0; i < numColunas - 1; i++) {
+                 if (i != posColuna) {
+                     linha[i] = -(linha[i]);
+                 }
+             }
+             setLinha(linha, posLinha);
+             salvarEstado();
+
+             // dividindo todos os valores de Xn pelo pivo.
+             for (var i = 0; i < numColunas; i++) {
+                 if (i != posLinha) {
+                     linha[i] = linha[i] / pivo;
+                 }
+             }
+
+             setLinha(linha, posLinha);
+             salvarEstado();
+
+
+             var celulaResult;
+             // calculando o resultado 
+             for (var i = 0; i < numColunas - 1; i++) {
+                 if (i != posLinha) {
+                     linha[numColunas - 1] += linha[i];
+                 }
+             }
+
+             console.log(linha);
+             setLinha(linha, posLinha);
+             salvarEstado();
+
+         }
+
+     }
+
+
+     // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     triangulacao = function() {
 
          if (!jaCalculado) {
              jaCalculado = true;
-
 
              // resetando variaveis
              estadoAtual = 0;
@@ -131,23 +186,13 @@
              // salvando estado inicial da tabela.
              salvarEstado();
 
-             // Organizando a estrutura da tabela(Triangulo de Zeros).
+             // Organizando a estrutura da tabela (Triangulo de Zeros).
              for (var posLinha = 0, posColuna = 0; posLinha < numLinhas - 1; posLinha++, posColuna++) {
 
                  var linha = [];
                  var linhaAux = [];
 
-                 // organizar linhas por tamanho absoluto do pivo
-                 for (var i = posLinha + 1; i < numLinhas; i++) {
-                     var linhaUm = getLinha(posLinha);
-                     var linhaDois = getLinha(i);
-
-                     if (Math.abs(linhaUm[posColuna]) < Math.abs(linhaDois[posColuna])) {
-                         setLinha(linhaDois, posLinha);
-                         setLinha(linhaUm, i);
-                         salvarEstado();
-                     }
-                 }
+                 organizarTabela(posLinha, posColuna);
 
                  // tratamento de erro, quando o pivo da primeira linha for igual a 0
                  var linhaUm = getLinha(0);
@@ -227,6 +272,26 @@
          }
 
      };
+
+
+     // organizar linhas por tamanho absoluto do pivo
+     function organizarTabela(posLinha, posColuna) {
+
+         for (var i = posLinha + 1; i < numLinhas; i++) {
+             var linhaUm = getLinha(posLinha);
+             var linhaDois = getLinha(i);
+
+             if (Math.abs(linhaUm[posColuna]) < Math.abs(linhaDois[posColuna])) {
+                 setLinha(linhaDois, posLinha);
+                 setLinha(linhaUm, i);
+                 salvarEstado();
+             }
+         }
+     }
+
+
+
+
 
 
      function calcVetor(vet1, vet2, posColuna, posLinhaVet1, posLinhaVet2) {
@@ -325,8 +390,13 @@
 
      // calcular tudo de uma vez e mostrar resultado
      calcular = function() {
+
          if (!jaCalculado) {
-             gauss();
+             if (metodoTriangulacao) {
+                 triangulacao();
+             } else {
+                 seidel();
+             }
          }
 
          estadoAtual = numEstados - 1;
@@ -335,7 +405,11 @@
      // ir para o proximo estado
      proximo = function() {
          if (!jaCalculado) {
-             gauss();
+             if (metodoTriangulacao) {
+                 triangulacao();
+             } else {
+                 seidel();
+             }
          }
 
          if (estadoAtual < numEstados - 1) {
@@ -353,8 +427,13 @@
      // ir para o estado anterior
      anterior = function() {
          if (!jaCalculado) {
-             gauss();
+             if (metodoTriangulacao) {
+                 triangulacao();
+             } else {
+                 seidel();
+             }
          }
+
 
          if (estadoAtual > 0) {
              estadoAtual--;
@@ -372,5 +451,17 @@
          jaCalculado = false;
          semSolucao = false;
      });
+
+     tipoMetodo = function(triangulacao) {
+         if (triangulacao) {
+             metodoTriangulacao = true;
+             $('#tipoMetodo').text("Triangulação");
+         } else {
+             metodoTriangulacao = false;
+             $('#tipoMetodo').text("Seidel");
+         }
+
+         jaCalculado = false;
+     }
 
  })(jQuery);
