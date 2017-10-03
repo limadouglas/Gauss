@@ -120,23 +120,34 @@
      // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
      seidel = function() {
          tabelas = [];
+         var vetorX = [];
+         var vetXAux = [];
+         var contRepeticoes = 0;
 
-         for (var posLinha = 0, posColuna = 0; posLinha < numLinhas; posLinha++, posColuna++) {
+
+         // iniciando o vetorX com um chute inicial de 0;
+         for (var i = 0; i < numColunas; i++) {
+             vetorX[i] = 0;
+         }
+
+         // Passo 1, estruturando a tabela para poder receber os valores de X.
+
+         for (var posLinha = 0; posLinha < numLinhas; posLinha++) {
              var linha = getLinha(posLinha);
-             var pivo = linha[posColuna];
+             var pivo = linha[posLinha];
 
              // verificando se o valor de x é diferente de 0
-             if (linha[posColuna] == 0) {
+             if (linha[posLinha] == 0) {
                  semSolucao = true;
                  break;
              }
 
-             linha[posColuna] = "---";
+             linha[posLinha] = "---"; //"X" + (posLinha + 1);
              salvarEstado();
 
              // invertendo sinal de todos os valores de X diferente da coluna em destaque.
              for (var i = 0; i < numColunas - 1; i++) {
-                 if (i != posColuna) {
+                 if (i != posLinha) {
                      linha[i] = -(linha[i]);
                  }
              }
@@ -146,26 +157,80 @@
              // dividindo todos os valores de Xn pelo pivo.
              for (var i = 0; i < numColunas; i++) {
                  if (i != posLinha) {
-                     linha[i] = linha[i] / pivo;
+                     linha[i] = parseFloat(linha[i] / pivo).toFixed(3);
                  }
              }
 
              setLinha(linha, posLinha);
              salvarEstado();
+         }
 
 
-             var celulaResult;
-             // calculando o resultado 
+         // Passo 2, Calculando a Tabela de acordo com os novos valores descobertos de X.
+
+         while (true && semSolucao != true) {
+             for (var i = 0; i < numLinhas - 1; i++) {
+                 vetXAux[i] = parseFloat(vetorX[i]).toFixed(3);
+             }
+
+
+             for (var posLinha = 0; posLinha < numLinhas; posLinha++) {
+                 var linha = getLinha(posLinha);
+                 linha[posLinha] = "---";
+                 var resultadoX = 0;
+
+                 // calculando o resultado 
+                 for (var i = 0; i < numColunas; i++) {
+                     if (i != posLinha && i != (numColunas - 1)) {
+                         resultadoX += parseFloat(linha[i] * vetorX[i]);
+                     } else if (i == (numColunas - 1)) {
+                         resultadoX += parseFloat(linha[numColunas - 1]);
+                     }
+                 }
+
+                 vetorX[posLinha] = resultadoX;
+
+                 console.log("linha:  " + linha);
+                 console.log("vetorX:  " + vetorX);
+
+                 setLinha(linha, posLinha);
+                 salvarEstado();
+             }
+
+             // Passo 3, Verificando a Precisão: comparando os resultados anteriores com os atuais. A precisão de todos os Xn tem que ser menor que 0.0001
+
+             var numPrecisao = 0;
+             for (var i = 0; i < numLinhas - 1; i++) {
+                 // verificação da precisão para parar o calculo.
+                 if (Math.abs(vetorX[i] - vetXAux[i]) < 0.0001 && vetorX[i] != "---") {
+                     numPrecisao++;
+                 }
+             }
+
+             if (numPrecisao == (numLinhas - 1) || contRepeticoes > 5000) {
+                 break;
+             }
+             contRepeticoes++;
+         }
+
+         // removendo valores antigos da tabela de resultado.
+         $('#tabela-resultado tbody').remove();
+         $('#tabela-resultado').append("<tbody></tbody>");
+
+         // caso sem solução seja falso os resultados serão mostrados, senão uma mensagem 'sem resultados' irá aparecer.
+         if (!semSolucao) {
              for (var i = 0; i < numColunas - 1; i++) {
-                 if (i != posLinha) {
-                     linha[numColunas - 1] += linha[i];
-                 }
+                 var novaLinha = $('<tr class="table-info">');
+                 var cols = "<td id='resultadoX'>X" + String(i + 1) + "</td>";
+                 cols += "<td>" + String(vetorX[i].toFixed(9)) + "</td>";
+                 novaLinha.append(cols);
+                 $('#tabela-resultado tbody').append(novaLinha);
              }
-
-             console.log(linha);
-             setLinha(linha, posLinha);
-             salvarEstado();
-
+         } else {
+             var novaLinha = $('<tr class="table-danger">');
+             var cols = "<td id='resultadoX'>Sem Solução!</td>";
+             novaLinha.append(cols);
+             $('#tabela-resultado tbody').append(novaLinha);
          }
 
      }
@@ -243,7 +308,7 @@
                      setLinha(linha, i);
                      salvarEstado();
                      linha[numColunas - 1] = linha[numColunas - 1] + (-linha[posColuna]);
-                     linha[posColuna] = 0;
+                     linha[posColuna] = (0).toFixed(3);
                      setLinha(linha, i);
                      salvarEstado();
                  }
@@ -259,7 +324,7 @@
                  for (var i = 0; i < numColunas - 1; i++) {
                      var novaLinha = $('<tr class="table-info">');
                      var cols = "<td id='resultadoX'>X" + String(i + 1) + "</td>";
-                     cols += "<td>" + String(celula(i, numColunas - 1)) + "</td>";
+                     cols += "<td>" + String(celula(i, numColunas - 1).toFixed(6)) + "</td>";
                      novaLinha.append(cols);
                      $('#tabela-resultado tbody').append(novaLinha);
                  }
@@ -372,7 +437,7 @@
          var vetor = [];
 
          for (var i = 0; i < numColunas; i++) {
-             vetor[i] = parseFloat(tr.find('input').eq(i).val());
+             vetor[i] = parseFloat(tr.find('input').eq(i).val()).toFixed(3);
          }
 
          return vetor;
